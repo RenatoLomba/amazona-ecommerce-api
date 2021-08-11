@@ -16,12 +16,12 @@ export class UserController {
 
   @Get()
   users() {
-    return this.userService.find({});
+    return this.userService.findMany({});
   }
 
   @Get(':id')
   user(@Param('id') _id: string) {
-    return this.userService.findOne({ _id });
+    return this.userService.findUnique({ _id });
   }
 
   @Post()

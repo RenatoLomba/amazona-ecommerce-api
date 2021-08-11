@@ -1,15 +1,53 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { data } from 'src/data';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { FilterQuery, Model } from 'mongoose';
+import { CreateProductDto } from './dto/create-product.dto';
+import { Product, ProductDocument } from './product.schema';
 
 @Injectable()
 export class ProductService {
-  findMany() {
-    return data.products;
+  constructor(
+    @InjectModel(Product.name) private productModel: Model<ProductDocument>,
+  ) {}
+
+  async create(createProductDto: CreateProductDto): Promise<Product> {
+    const product = new this.productModel(createProductDto);
+    if (!product)
+      throw new InternalServerErrorException('Error creating product');
+
+    return product.save().catch((ex) => {
+      throw new InternalServerErrorException(ex.message);
+    });
   }
 
-  findUnique(_id: string) {
-    const product = data.products.find((product) => product._id === _id);
-    if (!product) throw new NotFoundException();
+  async findMany(params: FilterQuery<ProductDocument>): Promise<Product[]> {
+    return this.productModel
+      .find(params)
+      .exec()
+      .catch((ex) => {
+        throw new InternalServerErrorException(ex.message);
+      });
+  }
+
+  async findUnique({
+    name,
+    _id,
+  }: {
+    _id?: string;
+    name?: string;
+  }): Promise<Product> {
+    const product = await this.productModel
+      .findOne({
+        $or: [{ _id }, { name }],
+      })
+      .catch((ex) => {
+        throw new InternalServerErrorException(ex.message);
+      });
+    if (!product) throw new NotFoundException('Product not found');
     return product;
   }
 }

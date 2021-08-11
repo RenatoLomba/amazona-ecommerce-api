@@ -30,7 +30,7 @@ export class UserService {
     });
   }
 
-  async find(params: FilterQuery<UserDocument>): Promise<User[]> {
+  async findMany(params: FilterQuery<UserDocument>): Promise<User[]> {
     return this.userModel
       .find(params)
       .exec()
@@ -39,7 +39,7 @@ export class UserService {
       });
   }
 
-  async findOne({
+  async findUnique({
     _id,
     email,
   }: {
@@ -56,7 +56,7 @@ export class UserService {
   }
 
   async delete(_id: string): Promise<User> {
-    const user = await this.findOne({ _id });
+    const user = await this.findUnique({ _id });
     await this.userModel.findByIdAndDelete(_id).catch((ex) => {
       throw new InternalServerErrorException(ex.message);
     });
