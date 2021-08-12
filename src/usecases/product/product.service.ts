@@ -6,7 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
-import { Product, ProductDocument } from './product.schema';
+import { Product, ProductDocument } from './product.entity';
 
 @Injectable()
 export class ProductService {

@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { Crypto } from 'src/common/crypto';
+import { Crypto } from 'src/utils/crypto';
 import { CreateUserDto } from 'src/usecases/user/dto/create-user.dto';
-import { User, UserDocument } from './user.schema';
+import { User, UserDocument } from './user.entity';
 
 @Injectable()
 export class UserService {
@@ -16,7 +16,7 @@ export class UserService {
     private crypto: Crypto,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto) {
     const createUserDtoHashedPassword: CreateUserDto = {
       ...createUserDto,
       password: await this.crypto.hash(createUserDto.password),
@@ -30,7 +30,7 @@ export class UserService {
     });
   }
 
-  async findMany(params: FilterQuery<UserDocument>): Promise<User[]> {
+  async findMany(params: FilterQuery<UserDocument>) {
     return this.userModel
       .find(params)
       .exec()
@@ -39,13 +39,7 @@ export class UserService {
       });
   }
 
-  async findUnique({
-    _id,
-    email,
-  }: {
-    _id?: string;
-    email?: string;
-  }): Promise<User> {
+  async findUnique({ _id, email }: { _id?: string; email?: string }) {
     const user = await this.userModel
       .findOne({ $or: [{ _id }, { email }] })
       .catch((ex) => {
@@ -55,7 +49,7 @@ export class UserService {
     return user;
   }
 
-  async delete(_id: string): Promise<User> {
+  async delete(_id: string) {
     const user = await this.findUnique({ _id });
     await this.userModel.findByIdAndDelete(_id).catch((ex) => {
       throw new InternalServerErrorException(ex.message);
