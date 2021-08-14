@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { AuthUserGuard } from 'src/common/guards/auth-user.guard';
 import { CreateUserDto } from '../user/dto/create-user.dto';
-import { UserDocument } from '../user/user.entity';
+import { User } from '../user/user.entity';
 import { Auth } from './auth.entity';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
@@ -27,7 +27,8 @@ export class AuthController {
 
   @Get()
   @UseGuards(AuthUserGuard)
-  async validateToken() {
-    return { isValid: true };
+  async validateToken(@CurrentUser() user: User) {
+    user.password = undefined;
+    return { isValid: true, user };
   }
 }
