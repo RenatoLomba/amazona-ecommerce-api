@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import * as mongoose from 'mongoose';
 
-export type ProductDocument = Product & Document;
+export type ProductDocument = Product & mongoose.Document;
 
 @Schema({ timestamps: true })
 export class Product {
@@ -23,7 +23,7 @@ export class Product {
   @Prop()
   brand: string;
 
-  @Prop({ default: 1.5, max: 5.0 })
+  @Prop({ default: 0, max: 5.0, type: mongoose.Schema.Types.Number })
   rating: number;
 
   @Prop({ default: 0 })
