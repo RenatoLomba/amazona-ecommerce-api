@@ -23,7 +23,7 @@ export class Product {
   @Prop()
   brand: string;
 
-  @Prop({ default: 0 })
+  @Prop({ default: 1.5, max: 5.0 })
   rating: number;
 
   @Prop({ default: 0 })
