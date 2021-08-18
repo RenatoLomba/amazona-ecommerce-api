@@ -12,9 +12,9 @@ export class ProductController {
     return this.productService.findMany({});
   }
 
-  @Get(':id')
-  async product(@Param('id') _id: string) {
-    return this.productService.findUnique({ _id });
+  @Get(':slug')
+  async product(@Param('slug') slug: string) {
+    return this.productService.findUnique({ slug });
   }
 
   @Post()

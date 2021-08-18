@@ -36,13 +36,15 @@ export class ProductService {
   async findUnique({
     name,
     _id,
+    slug,
   }: {
     _id?: string;
     name?: string;
+    slug?: string;
   }): Promise<Product> {
     const product = await this.productModel
       .findOne({
-        $or: [{ _id }, { name }],
+        $or: [{ _id }, { name }, { slug }],
       })
       .catch((ex) => {
         throw new InternalServerErrorException(ex.message);

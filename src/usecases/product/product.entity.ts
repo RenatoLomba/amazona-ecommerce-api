@@ -31,6 +31,9 @@ export class Product {
 
   @Prop()
   description: string;
+
+  @Prop({ unique: true })
+  slug: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

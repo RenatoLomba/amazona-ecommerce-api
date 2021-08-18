@@ -28,6 +28,10 @@ export class CreateProductDto {
   @IsString({ message: 'Field "description" is of type string' })
   description: string;
 
+  @IsNotEmpty({ message: 'Field "slug" is required' })
+  @IsString({ message: 'Field "slug" is of type string' })
+  slug: string;
+
   @IsNumber(
     { maxDecimalPlaces: 2 },
     { message: 'Field "price" is of type decimal(2)' },
