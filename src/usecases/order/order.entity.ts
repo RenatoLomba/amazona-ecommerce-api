@@ -35,14 +35,19 @@ export class Order {
     country: string;
   };
 
+  @Prop()
   paymentMethod: string;
 
+  @Prop()
   itemsPrice: number;
 
+  @Prop()
   shippingPrice: number;
 
+  @Prop()
   taxPrice: number;
 
+  @Prop()
   totalPrice: number;
 
   @Prop({ default: false })
@@ -51,9 +56,11 @@ export class Order {
   @Prop({ default: false })
   isDelivered: boolean;
 
-  paidAt: Date;
+  @Prop({ required: false })
+  paidAt?: Date;
 
-  deliveredAt: Date;
+  @Prop({ required: false })
+  deliveredAt?: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
