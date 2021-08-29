@@ -13,6 +13,7 @@ export class Order {
       name: mongoose.Schema.Types.String,
       qty: mongoose.Schema.Types.Number,
       image: mongoose.Schema.Types.String,
+      slug: mongoose.Schema.Types.String,
       price: mongoose.Schema.Types.Number,
     },
   ])

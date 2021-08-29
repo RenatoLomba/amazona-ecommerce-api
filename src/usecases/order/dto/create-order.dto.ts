@@ -11,7 +11,13 @@ import {
 export class CreateOrderDto {
   @IsNotEmpty({ message: 'Property "orderItems" is required' })
   @IsArray({ message: 'Property "orderItems" is of type list' })
-  orderItems: { name: string; qty: number; image: string; price: number }[];
+  orderItems: {
+    name: string;
+    qty: number;
+    image: string;
+    slug: string;
+    price: number;
+  }[];
 
   @IsNotEmptyObject(
     { nullable: false },
