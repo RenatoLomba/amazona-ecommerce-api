@@ -50,20 +50,34 @@ export class OrderController {
     return this.orderService.findMany({ user: user._id });
   }
 
-  @Put(':id')
+  @Put(':id/pay')
   @UseGuards(AuthUserGuard)
-  async updateOrderStatus(
+  async payOrder(@CurrentUser() user: UserDocument, @Param('id') _id: string) {
+    const order = await this.orderService.findUnique(_id);
+
+    if (String(order.user) !== String(user._id)) {
+      throw new UnauthorizedException('Only user owner can pay this order');
+    }
+
+    return this.orderService.update(_id, { isPaid: true, paidAt: new Date() });
+  }
+
+  @Put(':id/deliver')
+  @UseGuards(AuthUserGuard)
+  async deliverOrder(
     @CurrentUser() user: UserDocument,
     @Param('id') _id: string,
-    @Body() data: UpdateOrderDto,
   ) {
     const order = await this.orderService.findUnique(_id);
 
     if (String(order.user) !== String(user._id)) {
-      throw new UnauthorizedException('Only user owner can update this order');
+      throw new UnauthorizedException('Only user owner can pay this order');
     }
 
-    return this.orderService.update(_id, { ...data });
+    return this.orderService.update(_id, {
+      isDelivered: true,
+      deliveredAt: new Date(),
+    });
   }
 
   @Delete(':id')
