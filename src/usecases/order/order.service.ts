@@ -6,6 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order, OrderDocument } from './order.entity';
 
 @Injectable()
@@ -43,7 +44,23 @@ export class OrderService {
       });
   }
 
+  async update(_id: string, data: UpdateOrderDto) {
+    await this.orderModel
+      .findByIdAndUpdate(
+        _id,
+        {
+          ...data,
+        },
+        { useFindAndModify: false },
+      )
+      .catch((ex) => {
+        throw new InternalServerErrorException(ex.message);
+      });
+
+    return this.findUnique(_id);
+  }
+
   async delete(_id: string) {
-    return this.orderModel.findByIdAndDelete(_id);
+    return this.orderModel.findByIdAndDelete(_id, { useFindAndModify: false });
   }
 }
