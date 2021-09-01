@@ -2,7 +2,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Crypto } from 'src/utils/crypto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
-import { UserDocument } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { Auth } from './auth.entity';
 import { AuthDto } from './dto/auth.dto';
@@ -39,7 +38,11 @@ export class AuthService {
     return { user, token };
   }
 
-  async generateToken(user: UserDocument): Promise<string> {
+  async generateToken(user: {
+    name: string;
+    email: string;
+    _id?: string;
+  }): Promise<string> {
     const payload = { username: user.name, email: user.email, sub: user._id };
     return this.jwtService.signAsync(payload);
   }

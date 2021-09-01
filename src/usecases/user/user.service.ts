@@ -8,6 +8,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { Crypto } from 'src/utils/crypto';
 import { CreateUserDto } from 'src/usecases/user/dto/create-user.dto';
 import { User, UserDocument } from './user.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -47,6 +48,27 @@ export class UserService {
       });
     if (!user) throw new NotFoundException('User not found');
     return user;
+  }
+
+  async update(_id: string, data: UpdateUserDto) {
+    await this.findUnique({ _id });
+
+    await this.userModel
+      .findByIdAndUpdate(
+        _id,
+        {
+          ...data,
+          password: data.password
+            ? await this.crypto.hash(data.password)
+            : undefined,
+        },
+        { useFindAndModify: false },
+      )
+      .catch((err) => {
+        throw new InternalServerErrorException(err);
+      });
+
+    return this.findUnique({ _id });
   }
 
   async delete(_id: string) {
