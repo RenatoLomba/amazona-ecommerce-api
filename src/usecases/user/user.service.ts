@@ -51,7 +51,7 @@ export class UserService {
   }
 
   async update(_id: string, data: UpdateUserDto) {
-    await this.findUnique({ _id });
+    const user = await this.findUnique({ _id });
 
     await this.userModel
       .findByIdAndUpdate(
@@ -60,7 +60,7 @@ export class UserService {
           ...data,
           password: data.password
             ? await this.crypto.hash(data.password)
-            : undefined,
+            : user.password,
         },
         { useFindAndModify: false },
       )
