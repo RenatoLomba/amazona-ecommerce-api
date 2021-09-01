@@ -5,11 +5,13 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { AuthAdminGuard } from 'src/common/guards/auth-admin.guard';
 import { CreateUserDto } from 'src/usecases/user/dto/create-user.dto';
 import { UserService } from 'src/usecases/user/user.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UserController {
@@ -25,6 +27,12 @@ export class UserController {
   @UseGuards(AuthAdminGuard)
   user(@Param('id') _id: string) {
     return this.userService.findUnique({ _id });
+  }
+
+  @Put(':id')
+  @UseGuards(AuthAdminGuard)
+  updateUser(@Param('id') _id: string, @Body() dto: UpdateUserDto) {
+    return this.userService.update(_id, dto);
   }
 
   @Post()
