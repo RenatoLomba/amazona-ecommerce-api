@@ -29,6 +29,13 @@ export class UserController {
     return this.userService.findUnique({ _id });
   }
 
+  @Get('/admin/count')
+  @UseGuards(AuthAdminGuard)
+  async userCount() {
+    const users = await this.userService.findMany({});
+    return { users: { count: users.length } };
+  }
+
   @Put(':id')
   @UseGuards(AuthAdminGuard)
   updateUser(@Param('id') _id: string, @Body() dto: UpdateUserDto) {
