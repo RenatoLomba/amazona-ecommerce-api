@@ -17,6 +17,13 @@ export class ProductController {
     return this.productService.findUnique({ slug });
   }
 
+  @Get('admin/count')
+  @UseGuards(AuthAdminGuard)
+  async productsCount() {
+    const products = await this.productService.findMany({});
+    return { products: { count: products.length } };
+  }
+
   @Post()
   @UseGuards(AuthAdminGuard)
   async createProduct(@Body() data: CreateProductDto) {

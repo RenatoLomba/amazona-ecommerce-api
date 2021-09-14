@@ -10,10 +10,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { AuthAdminGuard } from 'src/common/guards/auth-admin.guard';
 import { AuthUserGuard } from 'src/common/guards/auth-user.guard';
 import { UserDocument } from '../user/user.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderService } from './order.service';
 
 @Controller('orders')
@@ -48,6 +48,27 @@ export class OrderController {
   @UseGuards(AuthUserGuard)
   async getUserOrders(@CurrentUser() user: UserDocument) {
     return this.orderService.findMany({ user: user._id });
+  }
+
+  @Get('/admin/count')
+  @UseGuards(AuthAdminGuard)
+  async ordersCount() {
+    const orders = await this.orderService.findMany({});
+    return { orders: { count: orders.length } };
+  }
+
+  @Get('/admin/all')
+  @UseGuards(AuthAdminGuard)
+  async orders() {
+    return this.orderService.findMany({});
+  }
+
+  @Get('/admin/total')
+  @UseGuards(AuthAdminGuard)
+  async ordersTotal() {
+    const orders = await this.orderService.findMany({});
+    const total = orders.reduce((ac, c) => ac + c.totalPrice, 0);
+    return { orders: { total } };
   }
 
   @Put(':id/pay')
