@@ -20,8 +20,8 @@ export class ProductController {
   @Get('admin/count')
   @UseGuards(AuthAdminGuard)
   async productsCount() {
-    const products = await this.productService.findMany({});
-    return { products: { count: products.length } };
+    const count = await this.productService.count();
+    return { products: { count } };
   }
 
   @Post()

@@ -14,6 +14,10 @@ export class ProductService {
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
   ) {}
 
+  async count() {
+    return this.productModel.countDocuments();
+  }
+
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const product = new this.productModel(createProductDto);
     if (!product)

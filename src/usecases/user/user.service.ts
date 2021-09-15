@@ -17,6 +17,10 @@ export class UserService {
     private crypto: Crypto,
   ) {}
 
+  async count() {
+    return this.userModel.countDocuments();
+  }
+
   async create(createUserDto: CreateUserDto) {
     const createUserDtoHashedPassword: CreateUserDto = {
       ...createUserDto,

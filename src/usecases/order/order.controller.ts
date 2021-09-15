@@ -53,8 +53,8 @@ export class OrderController {
   @Get('/admin/count')
   @UseGuards(AuthAdminGuard)
   async ordersCount() {
-    const orders = await this.orderService.findMany({});
-    return { orders: { count: orders.length } };
+    const count = await this.orderService.count();
+    return { orders: { count } };
   }
 
   @Get('/admin/all')
@@ -66,8 +66,7 @@ export class OrderController {
   @Get('/admin/total')
   @UseGuards(AuthAdminGuard)
   async ordersTotal() {
-    const orders = await this.orderService.findMany({});
-    const total = orders.reduce((ac, c) => ac + c.totalPrice, 0);
+    const total = await this.orderService.ordersTotalPrice();
     return { orders: { total } };
   }
 
