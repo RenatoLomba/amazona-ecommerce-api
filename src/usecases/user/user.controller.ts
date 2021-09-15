@@ -32,8 +32,8 @@ export class UserController {
   @Get('/admin/count')
   @UseGuards(AuthAdminGuard)
   async userCount() {
-    const users = await this.userService.findMany({});
-    return { users: { count: users.length } };
+    const count = await this.userService.count();
+    return { users: { count } };
   }
 
   @Put(':id')

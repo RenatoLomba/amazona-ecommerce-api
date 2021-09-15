@@ -15,6 +15,25 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
   ) {}
 
+  async ordersTotalPrice(): Promise<number> {
+    const ordersPriceGroup = await this.orderModel.aggregate([
+      {
+        $group: {
+          _id: null,
+          sales: { $sum: '$totalPrice' },
+        },
+      },
+    ]);
+    const ordersTotalPrice =
+      ordersPriceGroup.length > 0 ? ordersPriceGroup[0].sales : 0;
+
+    return ordersTotalPrice;
+  }
+
+  async count() {
+    return this.orderModel.countDocuments();
+  }
+
   async create(data: { user: string } & CreateOrderDto) {
     const order = new this.orderModel(data);
 
