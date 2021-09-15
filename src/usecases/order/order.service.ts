@@ -30,6 +30,18 @@ export class OrderService {
     return ordersTotalPrice;
   }
 
+  async salesData(): Promise<{ _id: string; totalSales: number }[]> {
+    const salesData = await this.orderModel.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } },
+          totalSales: { $sum: '$totalPrice' },
+        },
+      },
+    ]);
+    return salesData;
+  }
+
   async count() {
     return this.orderModel.countDocuments();
   }

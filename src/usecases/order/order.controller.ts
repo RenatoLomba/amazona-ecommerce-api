@@ -70,6 +70,13 @@ export class OrderController {
     return { orders: { total } };
   }
 
+  @Get('/admin/sales')
+  @UseGuards(AuthAdminGuard)
+  async salesData() {
+    const salesData = await this.orderService.salesData();
+    return { orders: { salesData } };
+  }
+
   @Put(':id/pay')
   @UseGuards(AuthUserGuard)
   async payOrder(@CurrentUser() user: UserDocument, @Param('id') _id: string) {
