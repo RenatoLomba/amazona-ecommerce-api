@@ -69,6 +69,7 @@ export class OrderService {
   async findMany(params: FilterQuery<OrderDocument>) {
     return this.orderModel
       .find(params)
+      .populate('user', 'name')
       .exec()
       .catch((ex) => {
         throw new InternalServerErrorException(ex.message);
