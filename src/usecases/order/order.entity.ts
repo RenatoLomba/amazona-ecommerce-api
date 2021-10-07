@@ -14,6 +14,7 @@ export class Order {
       qty: mongoose.Schema.Types.Number,
       image: mongoose.Schema.Types.String,
       slug: mongoose.Schema.Types.String,
+      description: mongoose.Schema.Types.String,
       price: mongoose.Schema.Types.Number,
     },
   ])
@@ -21,18 +22,24 @@ export class Order {
 
   @Prop({
     type: {
-      fullName: mongoose.Schema.Types.String,
+      firstName: mongoose.Schema.Types.String,
+      lastName: mongoose.Schema.Types.String,
       address: mongoose.Schema.Types.String,
       city: mongoose.Schema.Types.String,
       postalCode: mongoose.Schema.Types.String,
+      number: mongoose.Schema.Types.Number,
+      state: mongoose.Schema.Types.String,
       country: mongoose.Schema.Types.String,
     },
   })
   shippingAddress: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
     address: string;
     city: string;
     postalCode: string;
+    number: number;
+    state: string;
     country: string;
   };
 

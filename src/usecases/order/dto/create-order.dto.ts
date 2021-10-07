@@ -17,6 +17,7 @@ export class CreateOrderDto {
     image: string;
     slug: string;
     price: number;
+    description: string;
   }[];
 
   @IsNotEmptyObject(
@@ -25,10 +26,13 @@ export class CreateOrderDto {
   )
   @IsObject({ message: 'Property "shippingAddress" is of type object' })
   shippingAddress: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
     address: string;
     city: string;
     postalCode: string;
+    number: number;
+    state: string;
     country: string;
   };
 
