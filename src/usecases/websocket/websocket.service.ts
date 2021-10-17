@@ -28,8 +28,8 @@ export class WebSocketService implements OnGatewayConnection {
 
   handleConnection() {}
 
-  @SubscribeMessage('create-room')
-  async joinRoom(
+  @SubscribeMessage('enter-room')
+  async enterRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody() body: { userId: string },
   ) {
@@ -54,7 +54,9 @@ export class WebSocketService implements OnGatewayConnection {
 
     client.join(roomId);
 
-    this.server.to(roomId).emit('user-entered', data);
+    client.broadcast.to(roomId).emit('user-entered', data);
+
+    return data;
   }
 
   @SubscribeMessage('send-message')
@@ -72,6 +74,8 @@ export class WebSocketService implements OnGatewayConnection {
     };
     await this.roomService.addMessage(roomId, newMessage);
 
-    this.server.to(roomId).emit('receive-message', { newMessage });
+    client.broadcast.to(roomId).emit('receive-message', { newMessage });
+
+    return { newMessage };
   }
 }
