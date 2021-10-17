@@ -15,7 +15,6 @@ import { UserService } from '../user/user.service';
   cors: {
     origin: '*',
     credentials: true,
-    allowedHeaders: 'origin, x-requested-with, content-type',
   },
 })
 export class WebSocketService implements OnGatewayConnection {
@@ -34,7 +33,6 @@ export class WebSocketService implements OnGatewayConnection {
     @ConnectedSocket() client: Socket,
     @MessageBody() body: { userId: string },
   ) {
-    console.log(body.userId);
     const user = await this.userService.findUnique({ _id: body.userId });
 
     let data: any = null;
@@ -53,8 +51,6 @@ export class WebSocketService implements OnGatewayConnection {
       roomId = newRoom._id;
       data = { roomId, messages: newRoom.messages, user };
     }
-
-    console.log(data);
 
     client.join(roomId);
 
