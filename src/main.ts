@@ -6,7 +6,11 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+    credentials: true,
+    allowedHeaders: 'origin, x-requested-with, content-type',
+  });
 
   app.useGlobalPipes(new ValidationPipe());
 
@@ -19,8 +23,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
-  console.log('CAIU AQUIIII');
 
   await app.listen(process.env.PORT || 5000);
 }
