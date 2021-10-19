@@ -55,7 +55,7 @@ export class WebSocketService implements OnGatewayConnection {
       room = newRoom;
     }
 
-    await client.join(roomId);
+    await client.join(String(roomId));
 
     client.broadcast.emit('user-entered', { room });
 
@@ -89,7 +89,7 @@ export class WebSocketService implements OnGatewayConnection {
 
     await this.roomService.adminJoin(roomId, adminId);
 
-    await client.join(roomId);
+    await client.join(String(roomId));
 
     return { room };
   }
