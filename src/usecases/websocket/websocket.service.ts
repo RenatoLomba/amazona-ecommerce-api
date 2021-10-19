@@ -57,7 +57,7 @@ export class WebSocketService implements OnGatewayConnection {
 
     await client.join(String(roomId));
 
-    client.broadcast.emit('user-entered', { room });
+    client.broadcast.emit('user-entered', { room: { ...room._doc, user } });
 
     return data;
   }
@@ -113,6 +113,30 @@ export class WebSocketService implements OnGatewayConnection {
     const rooms = await this.roomService.findMany({
       isActive: true,
       admin: null,
+    });
+
+    return { rooms };
+  }
+
+  @SubscribeMessage('show-admin-rooms')
+  async showAdminRooms(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { adminId: string },
+  ) {
+    const { adminId } = body;
+    const admin = await this.userService.findUnique({ _id: adminId });
+
+    if (!admin) {
+      return { error: 'Admin Not Found' };
+    }
+
+    if (!admin.isAdmin) {
+      return { error: admin.name + ' is not Admin' };
+    }
+
+    const rooms = await this.roomService.findMany({
+      isActive: true,
+      admin: adminId,
     });
 
     return { rooms };

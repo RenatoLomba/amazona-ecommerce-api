@@ -23,9 +23,11 @@ export class RoomService {
     if (!createdRoom)
       throw new InternalServerErrorException('Error creating room');
 
-    return createdRoom.save().catch((ex) => {
+    await createdRoom.save().catch((ex) => {
       throw new InternalServerErrorException(ex.message);
     });
+
+    return createdRoom;
   }
 
   async findMany(params: FilterQuery<RoomDocument>) {
