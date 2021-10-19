@@ -15,7 +15,7 @@ export class RoomService {
   constructor(@InjectModel(Room.name) private roomModel: Model<RoomDocument>) {}
 
   async findOne(filter: FilterQuery<RoomDocument>) {
-    return this.roomModel.findOne(filter);
+    return this.roomModel.findOne(filter).populate('user', 'name');
   }
 
   async create(user: string) {
@@ -28,6 +28,16 @@ export class RoomService {
     });
   }
 
+  async findMany(params: FilterQuery<RoomDocument>) {
+    return this.roomModel
+      .find(params, { messages: 0 })
+      .populate('user', 'name')
+      .exec()
+      .catch((ex) => {
+        throw new InternalServerErrorException(ex.message);
+      });
+  }
+
   async addMessage(_id: string, message: Message) {
     const room = await this.findOne({ _id });
 
@@ -36,6 +46,20 @@ export class RoomService {
         _id,
         {
           messages: [...room.messages, { ...message }],
+        },
+        { useFindAndModify: false },
+      )
+      .catch((ex) => {
+        throw new InternalServerErrorException(ex.message);
+      });
+  }
+
+  async adminJoin(roomId: string, adminId: string) {
+    await this.roomModel
+      .findByIdAndUpdate(
+        roomId,
+        {
+          admin: adminId,
         },
         { useFindAndModify: false },
       )

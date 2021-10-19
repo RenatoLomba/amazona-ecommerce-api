@@ -37,6 +37,7 @@ export class WebSocketService implements OnGatewayConnection {
 
     let data: any = null;
     let roomId = '';
+    let room = null;
 
     const userHasRoom = await this.roomService.findOne({
       user: body.userId,
@@ -46,17 +47,75 @@ export class WebSocketService implements OnGatewayConnection {
     if (userHasRoom) {
       roomId = userHasRoom._id;
       data = { roomId, messages: userHasRoom.messages, user };
+      room = userHasRoom;
     } else {
       const newRoom = await this.roomService.create(body.userId);
       roomId = newRoom._id;
       data = { roomId, messages: newRoom.messages, user };
+      room = newRoom;
     }
 
-    client.join(roomId);
+    await client.join(roomId);
 
-    client.broadcast.to(roomId).emit('user-entered', data);
+    client.broadcast.emit('user-entered', { room });
 
     return data;
+  }
+
+  @SubscribeMessage('join-room')
+  async joinRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { adminId: string; roomId: string },
+  ) {
+    const { roomId, adminId } = body;
+    const admin = await this.userService.findUnique({ _id: adminId });
+
+    if (!admin) {
+      return { error: 'Admin Not Found' };
+    }
+
+    if (!admin.isAdmin) {
+      return { error: admin.name + ' is not Admin' };
+    }
+
+    const room = await this.roomService.findOne({
+      isActive: true,
+      _id: roomId,
+    });
+
+    if (!room) {
+      return { error: 'Room Not Found' };
+    }
+
+    await this.roomService.adminJoin(roomId, adminId);
+
+    await client.join(roomId);
+
+    return { room };
+  }
+
+  @SubscribeMessage('show-rooms')
+  async showRooms(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { adminId: string },
+  ) {
+    const { adminId } = body;
+    const admin = await this.userService.findUnique({ _id: adminId });
+
+    if (!admin) {
+      return { error: 'Admin Not Found' };
+    }
+
+    if (!admin.isAdmin) {
+      return { error: admin.name + ' is not Admin' };
+    }
+
+    const rooms = await this.roomService.findMany({
+      isActive: true,
+      admin: null,
+    });
+
+    return { rooms };
   }
 
   @SubscribeMessage('send-message')
