@@ -14,6 +14,12 @@ export class RoomController {
     return this.roomService.findMany({ isActive: true, admin: null });
   }
 
+  @Get(':id')
+  @UseGuards(AuthAdminGuard)
+  async getRoom(@Param('id') _id: string) {
+    return this.roomService.findOne({ _id });
+  }
+
   @Get('/innactive')
   @UseGuards(AuthAdminGuard)
   async innactiveRooms(@CurrentUser() user: UserDocument) {
