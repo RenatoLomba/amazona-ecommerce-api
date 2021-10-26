@@ -14,7 +14,7 @@ export class RoomController {
     return this.roomService.findMany({ isActive: true, admin: null });
   }
 
-  @Get(':id')
+  @Get('/get_by/:id')
   @UseGuards(AuthAdminGuard)
   async getRoom(@Param('id') _id: string) {
     return this.roomService.findOne({ _id });
