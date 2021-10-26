@@ -69,4 +69,18 @@ export class RoomService {
         throw new InternalServerErrorException(ex.message);
       });
   }
+
+  async finishRoom(_id: string) {
+    await this.roomModel
+      .findByIdAndUpdate(
+        _id,
+        {
+          isActive: false,
+        },
+        { useFindAndModify: false },
+      )
+      .catch((ex) => {
+        throw new InternalServerErrorException(ex.message);
+      });
+  }
 }
