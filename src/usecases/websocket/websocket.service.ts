@@ -161,4 +161,18 @@ export class WebSocketService implements OnGatewayConnection {
 
     return { newMessage };
   }
+
+  @SubscribeMessage('finish-room')
+  async finishRoom(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    body: { roomId: string },
+  ) {
+    const { roomId } = body;
+    await this.roomService.finishRoom(roomId);
+
+    client.broadcast.to(roomId).emit('room-finished', { roomId });
+
+    return { roomId };
+  }
 }
