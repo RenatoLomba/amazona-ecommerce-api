@@ -37,7 +37,7 @@ export class OrderController {
   ) {
     const order = await this.orderService.findUnique(_id);
 
-    if (String(order.user) !== String(user._id)) {
+    if (String(order.user) !== String(user._id) && !user.isAdmin) {
       throw new UnauthorizedException('Only user owner can see this order');
     }
 
