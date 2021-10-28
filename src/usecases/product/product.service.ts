@@ -6,6 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductDocument } from './product.entity';
 
 @Injectable()
@@ -26,6 +27,14 @@ export class ProductService {
     return product.save().catch((ex) => {
       throw new InternalServerErrorException(ex.message);
     });
+  }
+
+  async update(_id: string, data: UpdateProductDto): Promise<void> {
+    await this.productModel
+      .findByIdAndUpdate(_id, { ...data }, { useFindAndModify: false })
+      .catch((ex) => {
+        throw new InternalServerErrorException(ex.message);
+      });
   }
 
   async findMany(params: FilterQuery<ProductDocument>): Promise<Product[]> {
