@@ -46,6 +46,10 @@ export class ProductService {
       });
   }
 
+  async delete(_id: string): Promise<void> {
+    await this.productModel.findByIdAndDelete(_id, { useFindAndModify: false });
+  }
+
   async findUnique({
     name,
     _id,
