@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -87,5 +88,11 @@ export class ProductController {
     @Body() data: UpdateProductDto,
   ) {
     return this.productService.update(_id, data);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthAdminGuard)
+  async deleteProduct(@Param('id') _id: string) {
+    return this.productService.delete(_id);
   }
 }
