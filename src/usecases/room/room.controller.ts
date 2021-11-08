@@ -23,7 +23,11 @@ export class RoomController {
   @Get('/innactive')
   @UseGuards(AuthAdminGuard)
   async innactiveRooms(@CurrentUser() user: UserDocument) {
-    return this.roomService.findMany({ isActive: false, admin: user._id });
+    const rooms = await this.roomService.findMany({
+      isActive: false,
+      admin: user._id,
+    });
+    return rooms.filter((r) => r.user !== null);
   }
 
   @Put('/finish/:id')
